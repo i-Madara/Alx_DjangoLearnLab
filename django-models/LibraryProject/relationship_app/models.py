@@ -22,8 +22,13 @@ class Book(models.Model):
 
     class Meta:
         ordering = ["title"]
-        # This is optional, but helps avoid exact-duplicate titles per author
         unique_together = ("title", "author")
+        
+        permissions = (
+            ('can_add_book', 'Can add book'),
+            ('can_change_book', 'Can change book'),
+            ('can_delete_book', 'Can delete book'),
+        )
 
     def __str__(self) -> str:
         return f"{self.title} — {self.author.name}"

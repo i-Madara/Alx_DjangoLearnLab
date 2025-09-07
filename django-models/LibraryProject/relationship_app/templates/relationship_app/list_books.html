@@ -2,17 +2,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>List of Books</title>
+  <meta charset="UTF-8" />
+  <title>Books</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+    nav a, button.linklike { margin-right: 10px; text-decoration: none; }
+    ul { line-height: 1.8; }
+    form.inline { display: inline; margin-left: 8px; }
+    .actions { margin-left: 8px; }
+  </style>
 </head>
 <body>
-    <h1>Books Available:</h1>
-    <ul>
-        {% for book in books %}
-        <li>{{ book.title }} by {{ book.author.name }}</li>
-        {% empty %}
-        <li>No books found.</li>
-        {% endfor %}
-    </ul>
+  <header>
+    <h1 style="margin:0;">Books Available</h1>
+  </header>
+
+  <nav style="margin-bottom: 16px;">
+    {% if user.is_authenticated %}
+      <span>Hi, <strong>{{ user.username }}</strong>!</span>
+      <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+    |
+    <a href="{% url 'list_books' %}">All Books</a>
+    <a href="/libraries/1/">Sample Library #1</a>
+    |
+    <a href="/roles/admin/">Admin view</a>
+    <a href="/roles/librarian/">Librarian view</a>
+    <a href="/roles/member/">Member view</a>
+  </nav>
+
+  {% if perms.relationship_app.can_add_book %}
+    <p><a href="{% url 'add_book' %}">➕ Add Book</a></p>
+  {% endif %}
+
+  <ul>
+    {% for book in books %}
+      <li>
+        {{ book.title }} by {{ book.author.name }}
+        <span class="actions">
+          {% if perms.relationship_app.can_change_book %}
+            <a href="{% url 'edit_book' book.pk %}">Edit</a>
+          {% endif %}
+          {% if perms.relationship_app.can_delete_book %}
+            <form class="inline" method="post" action="{% url 'delete_book' book.pk %}">
+              {% csrf_token %}
+              <button type="submit">Delete</button>
+            </form>
+          {% endif %}
+        </span>
+      </li>
+    {% empty %}
+      <li>No books found.</li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
