@@ -59,3 +59,39 @@ class Librarian(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} @ {self.library.name}"
+
+# --- Role-based access: UserProfile model + signals ---
+
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Member')
+
+    def __str__(self) -> str:
+        return f"{self.user.username} ({self.role})"
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    # Automatically create a profile for new users
+    if created:
+        UserProfile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    # Ensure profile saves when user saves
+    # (profile will exist for new users; for legacy users, create if missing)
+    if not hasattr(instance, 'profile'):
+        UserProfile.objects.get_or_create(user=instance)
+    else:
+        instance.profile.save()
