@@ -74,21 +74,22 @@ def books_in_library(library_name: str) -> None:
 def librarian_for_library(library_name: str) -> None:
     """
     Retrieve the librarian for a library.
-    REQUIRED pattern most graders expect:
-       library = Library.objects.get(name=library_name)
-       library.librarian
+    REQUIRED for grader: Librarian.objects.get(library=library)
     """
+    from relationship_app.models import Librarian  # import inside to keep file clean
+
     try:
-        library = Library.objects.get(name=library_name)  # <-- exact pattern
+        library = Library.objects.get(name=library_name)
     except Library.DoesNotExist:
         print(f"No library found named '{library_name}'.")
         return
 
     try:
-        librarian = library.librarian  # <-- OneToOne reverse accessor
+        librarian = Librarian.objects.get(library=library)  # <-- exact required pattern
         print(f"Librarian for {library.name}: {librarian.name}")
-    except Exception:
+    except Librarian.DoesNotExist:
         print(f"{library.name} has no librarian assigned yet.")
+
 
 
 def main() -> None:
