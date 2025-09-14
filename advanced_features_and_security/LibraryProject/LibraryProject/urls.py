@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from LibraryProject.bookshelf import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('books/view/', views.view_books),
+    path('books/create/', views.create_book),
+    path('books/edit/', views.edit_book),
+    path('books/delete/', views.delete_book),
 ]
+
