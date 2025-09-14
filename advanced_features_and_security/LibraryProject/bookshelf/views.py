@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import permission_required
 from .models import Book
 from .forms import SearchForm
+from .forms import ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def view_books(request):
@@ -33,3 +34,9 @@ def search_books(request):
         results = Book.objects.filter(title__icontains=title)
         return render(request, "bookshelf/book_list.html", {"books": results})
     return HttpResponse("Invalid input", status=400)
+
+def form_example(request):
+    form = ExampleForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        return HttpResponse("Form submitted successfully!")
+    return render(request, "bookshelf/form_example.html", {"form": form})
