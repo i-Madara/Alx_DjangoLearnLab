@@ -6,7 +6,7 @@ from .serializers import BookSerializer
 class BookListView(generics.ListAPIView):
     """
     GET -> List all books.
-    Accessible by everyone (AllowAny).
+    Public access.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -16,7 +16,7 @@ class BookListView(generics.ListAPIView):
 class BookDetailView(generics.RetrieveAPIView):
     """
     GET -> Retrieve a single book by ID.
-    Accessible by everyone (AllowAny).
+    Public access.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -26,7 +26,7 @@ class BookDetailView(generics.RetrieveAPIView):
 class BookCreateView(generics.CreateAPIView):
     """
     POST -> Create a new book.
-    Restricted to authenticated users.
+    Authenticated users only.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -36,7 +36,7 @@ class BookCreateView(generics.CreateAPIView):
 class BookUpdateView(generics.UpdateAPIView):
     """
     PUT/PATCH -> Update an existing book.
-    Restricted to authenticated users.
+    Authenticated users only.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -45,8 +45,8 @@ class BookUpdateView(generics.UpdateAPIView):
 
 class BookDeleteView(generics.DestroyAPIView):
     """
-    DELETE -> Delete a book.
-    Restricted to authenticated users.
+    DELETE -> Remove a book.
+    Authenticated users only.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
