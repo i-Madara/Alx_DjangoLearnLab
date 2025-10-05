@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import login as auth_login
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 def index(request):
@@ -16,7 +16,7 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            messages.success(request, "Your account has been created. You can now log in.")
+            messages.success(request, "Account created. Please log in.")
             return redirect('login')
     else:
         form = UserRegisterForm()
@@ -31,7 +31,7 @@ def profile(request):
             u_form.save()
             p_form.save()
             messages.success(request, "Profile updated successfully.")
-            return redirect('profile')
+            return redirect('profile')  # PRG pattern
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=request.user.profile)

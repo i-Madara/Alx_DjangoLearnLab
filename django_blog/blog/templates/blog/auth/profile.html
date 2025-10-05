@@ -1,44 +1,10 @@
 {% extends "blog/base.html" %}
 {% block content %}
 <h2>My Profile</h2>
-
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
-
-  <fieldset>
-    <legend>Account</legend>
-    {{ u_form.non_field_errors }}
-    <div>
-      <label>Username</label>
-      {{ u_form.username.errors }}
-      {{ u_form.username }}
-    </div>
-    <div>
-      <label>Email</label>
-      {{ u_form.email.errors }}
-      {{ u_form.email }}
-    </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>Profile</legend>
-    {{ p_form.non_field_errors }}
-    <div>
-      <label>Bio</label>
-      {{ p_form.bio.errors }}
-      {{ p_form.bio }}
-    </div>
-    <div>
-      <label>Avatar</label>
-      {{ p_form.avatar.errors }}
-      {{ p_form.avatar }}
-    </div>
-    {% if request.user.profile.avatar %}
-      <p>Current avatar:</p>
-      <img src="{{ request.user.profile.avatar.url }}" alt="avatar" width="120">
-    {% endif %}
-  </fieldset>
-
+  {{ u_form.as_p }}
+  {{ p_form.as_p }}
   <button type="submit">Save Changes</button>
 </form>
 {% endblock %}
